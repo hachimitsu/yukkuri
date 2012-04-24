@@ -1,0 +1,5 @@
+*.o
+*.sublime-workspace
+*.sublime-project
+*.exe
+.gitignore
