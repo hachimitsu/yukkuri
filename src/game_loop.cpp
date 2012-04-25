@@ -42,6 +42,8 @@ void calculateFPS(int currentTime)
 
 void Game::Loop()
 {
+	if( !moving )
+		moving = true;
 	static int previousTime = 0;
 	int currentTime;
 	currentTime = SDL_GetTicks();

@@ -8,6 +8,7 @@ Game::Game()
 	winHeight = 600;
 	keyStates = new bool[256];
 	moving = false;
+	active = true;
 }
 
 int Game::Execute()
@@ -20,12 +21,12 @@ int Game::Execute()
 	while(Running)
 	{
 		while(SDL_PollEvent(&event))
-		{
-			Events(&event);
+				Events(&event);
+		if( active ){
+			Loop();
+			Render();
 		}
-		Loop();
-		Render();
-		Sleep(16);
+		Sleep(10);
 	}
 
 	Cleanup();

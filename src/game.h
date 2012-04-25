@@ -18,7 +18,7 @@ struct Mouse{
 
 class Game{
 private:
-	bool Running;
+	bool Running, active;
 	SDL_Surface* Surf_Display;
 
 	int winWidth;

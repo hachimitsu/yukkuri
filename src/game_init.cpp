@@ -15,6 +15,8 @@ bool Game::Init()
     }
     
     SDL_ShowCursor(0);
+    SDL_WarpMouse(winWidth/2, winHeight/2);
+    
     glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_DEPTH_TEST);
