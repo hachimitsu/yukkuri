@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "Maths.h"
 
+#define EPSILON 0.00001
+
 vector3f::vector3f()
 {
 	x = 0;
@@ -152,7 +154,10 @@ vector3f& vector3f::operator=(const vector3f& rhs)
 
 bool vector3f::operator==(const vector3f& rhs) const
 {
-	return x == rhs.x && y == rhs.y && z == rhs.z;
+	float i = fabs(x-rhs.x);
+	float j = fabs(y-rhs.y);
+	float k = fabs(z-rhs.z);
+	return i < EPSILON && j < EPSILON && k < EPSILON;
 }
 
 bool vector3f::operator!=(const vector3f& rhs) const

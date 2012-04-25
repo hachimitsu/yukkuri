@@ -57,8 +57,7 @@ void Game::Events(SDL_Event* Event)
 			{
 				case SDL_BUTTON_MIDDLE:
 					mouse.middle = true;
-					mouse.pos.x = Event->button.x;
-					mouse.pos.y = Event->button.y;
+					break;
 			}
 			break;
 		case SDL_MOUSEBUTTONUP:
@@ -70,12 +69,10 @@ void Game::Events(SDL_Event* Event)
 			}
 			break;
 		case SDL_MOUSEMOTION:
-			if( mouse.middle )
-			{
-				camera.lookat(float(Event->motion.x - mouse.pos.x),float(Event->motion.y - mouse.pos.y), MOUSE_SENSITIVITY, dt);
-				mouse.pos.x = Event->motion.x;
-				mouse.pos.y = Event->motion.y;
-			}
+			camera.lookat(float(Event->motion.x - winWidth/2),float(Event->motion.y - winHeight/2), MOUSE_SENSITIVITY, dt);
+			SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
+			SDL_WarpMouse(winWidth/2, winHeight/2);
+			SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
 			break;
 	}
 }

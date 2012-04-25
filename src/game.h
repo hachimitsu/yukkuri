@@ -6,6 +6,7 @@
 #include "Math/Maths.h"
 #include "Camera.h"
 #include <iostream>
+#include <fstream>
 
 #define MOUSE_SENSITIVITY 1.0f
 #define GAME_SPEED 60.0f

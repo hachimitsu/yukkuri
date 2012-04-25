@@ -1,7 +1,5 @@
 #include "game.h"
 
-using namespace std;
-
 Game::Game()
 {
 	Surf_Display = NULL;
@@ -35,7 +33,7 @@ int Game::Execute()
 
 int main(int argc, char* argv[])
 {
-	FreeConsole();
-    Game theGame;
+	//FreeConsole();
+ 	Game theGame;
     return theGame.Execute();
 }

@@ -1,15 +1,44 @@
 #include "Math/Maths.h"
 #include "Camera.h"
 #include <SDL/SDL_opengl.h>
+#include <iostream>
 
 Camera::Camera(){
 
 }
 
+void Camera::lookat(vector3f target)
+{
+	target = target - pos;
+
+	theta = getAngle(vector3f(-1, 0, 0), target);
+	if( target.z > 0 )
+		theta = -theta;
+
+	phi = -getAngle(vector3f(0, 1, 0), target);
+
+	setViewMatrix();
+}
+
+void Camera::lookat(float x, float y, float z)
+{
+	vector3f target(x,y,z);
+
+	target = target - pos;
+
+	theta = getAngle(vector3f(-1, 0, 0), target);
+	if( target.z > 0 )
+		theta = -theta;
+
+	phi = -getAngle(vector3f(0, 1, 0), target);
+
+	setViewMatrix();
+}
+
 void Camera::lookat(float dx,float dy,float sensitivity,float dt)
 {
-	theta += dx * sensitivity * dt/5.0f;
-	phi -= dy * sensitivity * dt/5.0f;
+	theta += dx * sensitivity * (dt/5.0f);
+	phi -= dy * sensitivity * (dt/5.0f);
 
 	theta = fmod(theta,360);
 
@@ -24,6 +53,8 @@ void Camera::lookat(float dx,float dy,float sensitivity,float dt)
 void Camera::move(float tick)
 {
 	pos += (destination-pos) * (tick/10.0f);
+	if( destination == pos )
+		in_action = false;
 	setViewMatrix();
 }
 
@@ -115,6 +146,7 @@ void Camera::setDestination(float i,float j,float k)
 	destination.x = i;
 	destination.y = j;
 	destination.z = k;
+	in_action = true;
 }
 
 void Camera::setDestination(int d)
@@ -146,6 +178,7 @@ void Camera::setDestination(int d)
 			destination = pos + normalize(right - heading) * speed;
 			break;
 	}
+	in_action = true;
 }
 
 void Camera::setPos(vector3f v)

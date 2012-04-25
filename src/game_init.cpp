@@ -14,6 +14,7 @@ bool Game::Init()
         return false;
     }
     
+    SDL_ShowCursor(0);
     glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_DEPTH_TEST);
@@ -40,9 +41,9 @@ bool Game::Init()
 	}
 
 	camera.init((float)winWidth/(float)winHeight);
-	camera.setPos(0,5,5);
+	camera.setPos(0,5,10);
+	camera.lookat(0, 5, 0);
 	camera.setDestination(camera.getPos());
-	camera.setViewMatrix();
 
 	light.set(0,5,0);
 
