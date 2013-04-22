@@ -1,81 +1,70 @@
 #include "game.h"
 
-void drawHex(float x, float z)
-{
-	glBegin(GL_LINE_LOOP);
-		glNormal3f(0,1,0);
-		glVertex3f(x, 0, z+0.5f);
-		glVertex3f(x + 0.433f, 0, z+0.25f);
-		glVertex3f(x + 0.433f, 0, z-0.25f);
-		glVertex3f(x, 0, z-0.5f);
-		glVertex3f(x - 0.433f, 0, z-0.25f);
-		glVertex3f(x - 0.433f, 0, z+0.25f);
-	glEnd();
-}
+//Set light position and properties
+void setLights(vector3f light, float intensity){
+	GLfloat sun[]  = { 1, 1, 1, 1 };
+	GLfloat ambient[]  = { 1, 1, 1, 1 };
+	GLfloat diffuse[]  = { 0.4, 0.4, 0.4, 1 };
+	GLfloat specular[] = { 1, 1, 1, 1 };
+	float light_position[] = {light.x, light.y, light.z, 0};
 
-void setLights(vector3f light, float intensity)
-{
-	float white[] = {1*intensity,1*intensity,1*intensity,1};
-	float specular[] = {0.8*intensity,0.8*intensity,0.8*intensity};
-	float diffuse[] = {0.8*intensity,0.8*intensity,0.8*intensity};
-	float light_position[] = {light.x, light.y, light.z};
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, white);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, diffuse);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, sun);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 }
 
-void drawScene()
-{
-	GLfloat material_diffuse[] = {1,1,1,1};
-	GLfloat material_specular[] = {1,1,1,1 };
-    GLfloat material_shininess[] = { 60 };
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, material_shininess);
+// Draw the HUD
+void Game::draw_hud(){
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDepthMask(GL_FALSE);
 
-	static int gridSize = 26;
-	float x = -(gridSize*2*0.866f)/2.0f, z = -float(gridSize/2.0f + (gridSize * 0.5)/2.0f);
-	for (int i = 0; i <= gridSize*2; i++)
-	{
-		if(i%2 == 0)
-			x = -(gridSize*2*0.866f)/2.0f;
-		else
-			x = -(gridSize*2*0.866f)/2.0f + 0.433;
-		for (int j = 0; j <= gridSize*2; j++)
-		{
-			// glPushMatrix();
-			// 	glColor4f(0,0,0,0);
-			// 	glTranslatef(x,0.1,z);
-			// 	glScalef(0.8,1,0.8);
-			// 	glTranslatef(-x,0,-z);
-			// 	drawHex(x,z);
-			// glPopMatrix();	
-			glColor3f(0.2,0.2,0.2);
-			drawHex(x,z);
-			x += 0.866;
-		}
-		z += .75;
-	}
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,winWidth,winHeight,0,-1,1);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+
+
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 }
 
-void Game::Render()
-{
+//Draw the world and all objects
+void Game::drawScene(){
+	int r = 10;
+
+	glColor3f(1,0,0);
+	glNormal3f(0,1,0);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3f(0,0,0);
+	for( int i = 0; i >= -360; i-=10 ){
+		vector3f p(r * cos(to_rad(i)), 0, r * sin(to_rad(i)));
+		glVertex3f(p.x,p.y,p.z);
+	}
+	glEnd();
+
+
+	draw_hud();
+}
+
+// Setup the environment for drawing
+void Game::Render(){
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glViewport(0, 0, winWidth, winHeight);
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(camera.getProjectionMatrix());
-	
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(camera.getViewMatrix());
 
 	setLights(light, 0.5);
 
 	drawScene();
-
 	SDL_GL_SwapBuffers();
 }

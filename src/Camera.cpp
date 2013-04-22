@@ -1,44 +1,46 @@
 #include "Math/Maths.h"
 #include "Camera.h"
 #include <SDL/SDL_opengl.h>
-#include <iostream>
 
 Camera::Camera(){
 
 }
 
+// Looks at a given point
 void Camera::lookat(vector3f target)
 {
 	target = target - pos;
 
-	theta = getAngle(vector3f(-1, 0, 0), target);
+	theta = get_angle(vector3f(-1, 0, 0), target);
 	if( target.z > 0 )
 		theta = -theta;
 
-	phi = -getAngle(vector3f(0, 1, 0), target);
+	phi = -get_angle(vector3f(0, 1, 0), target);
 
 	setViewMatrix();
 }
 
+// Looks at a given point
 void Camera::lookat(float x, float y, float z)
 {
 	vector3f target(x,y,z);
 
 	target = target - pos;
 
-	theta = getAngle(vector3f(-1, 0, 0), target);
+	theta = get_angle(vector3f(-1, 0, 0), target);
 	if( target.z > 0 )
-		theta = -theta;
+ 		theta = -theta;
 
-	phi = -getAngle(vector3f(0, 1, 0), target);
+	phi = -get_angle(vector3f(0, 1, 0), target);
 
 	setViewMatrix();
 }
 
+// Changes the cameras rotation. Used for free looking with the mouse.
 void Camera::lookat(float dx,float dy,float sensitivity,float dt)
 {
-	theta += dx * sensitivity * (dt/5.0f);
-	phi -= dy * sensitivity * (dt/5.0f);
+	theta += dx * sensitivity * dt;
+	phi -= dy * sensitivity * dt;
 
 	theta = fmod(theta,360);
 
@@ -50,10 +52,12 @@ void Camera::lookat(float dx,float dy,float sensitivity,float dt)
 	setViewMatrix();
 }
 
+
+// Moves the camera position
 void Camera::move(float tick)
 {
-	pos += (destination-pos) * (tick/10.0f);
-	if( destination == pos )
+	pos += (destination-pos) * tick;
+	if( (destination-pos).magnitude() < 0.05f )
 		in_action = false;
 	setViewMatrix();
 }
@@ -85,9 +89,9 @@ void Camera::setViewMatrix()
 	heading.y = cos(M_PI1 * phi);
 	heading.z = sin(M_PI1 * theta) * sin(M_PI1 * phi);
 
-	heading = normalize(heading);
-	right = normalize(crossProduct(heading,vector3f(0,1,0)));
-	up = normalize(crossProduct(right,heading));
+	heading.normalize();
+	right = cross_product(heading,vector3f(0,1,0)).unit();
+	up = cross_product(right,heading).unit();
 
 	glPushMatrix();
 		glLoadIdentity();
@@ -141,11 +145,20 @@ void Camera::setAngles(float i,float j)
 	phi = j;
 }
 
+// setDestination points to where the camera is moving to.
 void Camera::setDestination(float i,float j,float k)
 {
 	destination.x = i;
 	destination.y = j;
 	destination.z = k;
+	in_action = true;
+}
+
+void Camera::setDestination(vector3f d, float dragspeed)
+{
+	vector3f h(heading.x,0,heading.z);
+	h = h * d.z + right * -d.x;
+	destination = pos + h.unit() * dragspeed;
 	in_action = true;
 }
 
@@ -166,16 +179,16 @@ void Camera::setDestination(int d)
 			destination = pos - heading * speed;
 			break;
 		case 7:
-			destination = pos + normalize(right * -1 + heading) * speed;
+			destination = pos + (right * -1 + heading).unit() * speed;
 			break;
 		case 1:
-			destination = pos + normalize(right * -1 - heading) * speed;
+			destination = pos + (right * -1 - heading).unit() * speed;
 			break;
 		case 9:
-			destination = pos + normalize(right + heading) * speed;
+			destination = pos + (right + heading).unit() * speed;
 			break;
 		case 3:
-			destination = pos + normalize(right - heading) * speed;
+			destination = pos + (right - heading).unit() * speed;
 			break;
 	}
 	in_action = true;
@@ -199,9 +212,4 @@ void Camera::setUp(vector3f v)
 void Camera::setRight(vector3f v)
 {
 	right = v;
-}
-
-void Camera::setDestination(vector3f v)
-{
-	destination = v;
 }

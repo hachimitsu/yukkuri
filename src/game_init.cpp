@@ -1,21 +1,26 @@
 #include "game.h"
+#include "time.h"
 
 bool Game::Init()
 {
+	putenv("SDL_VIDEO_CENTERED=1"); 
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
         return false;
     }
 
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    if((Surf_Display = SDL_SetVideoMode(winWidth, winHeight, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL)) == NULL)
+    if((Surf_Display = SDL_SetVideoMode(winWidth, winHeight, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL | SDL_RESIZABLE)) == NULL)
     {
         return false;
     }
-    
-    SDL_ShowCursor(0);
-    SDL_WarpMouse(winWidth/2, winHeight/2);
+
+    SDL_WM_SetCaption( "Project Touka", NULL );
+
+    glViewport(0, 0, winWidth, winHeight);
     
     glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
@@ -34,26 +39,31 @@ bool Game::Init()
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glPolygonOffset(1, 4);
-	glEnable(GL_POLYGON_OFFSET_FILL);
+	
+	// GLfloat fogcolor[4] = {1,1,1,1};
+	// glEnable(GL_FOG);
+	// glFogi(GL_FOG_MODE,GL_LINEAR);
+	// glFogfv(GL_FOG_COLOR,fogcolor);
+	// glFogf(GL_FOG_DENSITY,0.02);
+	// glFogf(GL_FOG_START,0.1f);
+	// glFogf(GL_FOG_END,15.0f);
+	// glHint(GL_FOG_HINT, GL_DONT_CARE);
 
 	for (int i = 0; i < 256; ++i)
-	{
 		keyStates[i] = false;
-	}
 
-	camera.init((float)winWidth/(float)winHeight);
-	camera.setPos(0,5,10);
-	camera.lookat(0, 5, 0);
-	camera.setDestination(camera.getPos());
+	// Initialize camera
+	camera.init(winWidth/float(winHeight));
+	camera.setPos(0,2,3);
+	camera.lookat(0, 0, 1.5);
+	camera.setSpeed(0.025f);
 
-	light.set(0,5,0);
-
+	// Initialize lights
+	light.set(-0.5,2,-2.7);
 	float global_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 	return true;
 }

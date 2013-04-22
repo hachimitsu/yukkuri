@@ -5,7 +5,7 @@
 
 class Camera{
 private:
-	vector3f pos;
+	vector3f pos, int_pos;
 	vector3f heading;
 	vector3f up;
 	vector3f right;
@@ -27,15 +27,15 @@ public:
 	void setAngles(float,float);
 	void setDestination(float,float,float);
 	void setDestination(int);
+	void setDestination(vector3f, float);
 	void setSpeed(float);
 
 	void setPos(vector3f);
 	void setHeading(vector3f);
 	void setUp(vector3f);
 	void setRight(vector3f);
-	void setDestination(vector3f);
 
-	vector3f getPos(){ return pos; }
+	vector3f get_pos(){ return pos; }
 	vector3f getHeading(){ return heading; }
 	vector3f getUp(){ return up; }
 	vector3f getRight(){ return right; }
@@ -47,6 +47,7 @@ public:
 
 	void init(float);
 	void move(float);
+	void move();
 	void lookat(float,float,float);
 	void lookat(vector3f);
 	void lookat(float,float,float,float);

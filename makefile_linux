@@ -2,12 +2,12 @@ DIR=src
 ODIR=obj
 CC = g++
 PFLAGS = -O3 -ffast-math -g -c -w
-CFLAGS = -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -static-libgcc -static-libstdc++
+CFLAGS = -lSDLmain -lSDL -lSDL_image -lGL -lGLU
 
 OBJ = $(ODIR)/game.o $(ODIR)/game_cleanup.o $(ODIR)/game_events.o $(ODIR)/game_init.o $(ODIR)/game_loop.o $(ODIR)/game_render.o $(ODIR)/vector3f.o $(ODIR)/Maths.o $(ODIR)/Camera.o
 
-main.exe: $(OBJ)
-	$(CC) $(OBJ) -o main.exe $(CFLAGS)
+main: $(OBJ)
+	$(CC) $(OBJ) -o main $(CFLAGS)
 
 $(ODIR)/game.o: $(DIR)/game.cpp $(DIR)/game.h
 	$(CC) $(PFLAGS) $(DIR)/game.cpp -o $(ODIR)/game.o
@@ -40,4 +40,4 @@ clean:
 	rm $(ODIR)/*.o
 
 cleanall:
-	rm $(ODIR)/*.o main.exe
+	rm $(ODIR)/*.o main
