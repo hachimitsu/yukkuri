@@ -17,11 +17,10 @@ struct colour
 	int r, g, b, o;
 };
 
-float dot_product(vector3f, vector3f);
 float get_angle(vector3f, vector3f);
-vector3f cross_product(vector3f, vector3f);
 vector3f normal(vector3f,vector3f,vector3f);
 float real_rand();
+int rand_range(int,int);
 float to_rad(float);
 float to_deg(float);
 void set_colour(colour&,int,int,int,int);

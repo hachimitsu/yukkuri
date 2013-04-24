@@ -1,6 +1,4 @@
 #include "game.h"
-#include <iostream>
-using namespace std;
 
 void draw_ring(float size){
 	static GLuint index;
@@ -26,7 +24,6 @@ void draw_ring(float size){
 	glPopMatrix();
 }
 
-//Set light position and properties
 void setLights(vector3f light, float intensity){
 	GLfloat sun[]  = { 1, 1, 1, 1 };
 	GLfloat ambient[]  = { 1, 1, 1, 1 };
@@ -40,7 +37,6 @@ void setLights(vector3f light, float intensity){
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 }
 
-// Draw the HUD
 void Game::draw_hud(){
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
@@ -101,7 +97,6 @@ void draw_cube(float size){
 	glEnd();
 }
 
-//Draw the world and all objects
 void Game::drawScene(){
 	int r = 30;
 
@@ -126,14 +121,11 @@ void Game::drawScene(){
 	draw_cube(0.1);
 	glPopMatrix();
 
-	draw_ring(10);
-	draw_ring(20);
-	draw_ring(30);
+	map.display(camera.get_pos());
 
 	draw_hud();
 }
 
-// Setup the environment for drawing
 void Game::Render(){
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

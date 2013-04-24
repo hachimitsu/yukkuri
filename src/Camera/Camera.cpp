@@ -43,10 +43,10 @@ void Camera::lookat(float dx,float dy,float sensitivity,float dt)
 
 	theta = fmod(theta,360);
 
-	if( phi < -180 )
-		phi = -179.9999;
-	else if( phi > 0 )
-		phi = -0.0001;
+	if( phi < -179 )
+		phi = -179;
+	else if( phi > -1 )
+		phi = -1;
 
 	setViewMatrix();
 }
@@ -56,7 +56,7 @@ void Camera::lookat(float dx,float dy,float sensitivity,float dt)
 void Camera::move(float tick)
 {
 	pos += (destination-pos) * tick;
-	if( (destination-pos).magnitude() < 0.05f )
+	if( (destination-pos).magnitude() < 0.0001f )
 		in_action = false;
 	setViewMatrix();
 }
@@ -69,9 +69,6 @@ void Camera::setSpeed(float s)
 void Camera::init(float ratio)
 {
 	pos = vector3f(0,0,0);
-	heading = vector3f(0,0,-1);
-	up = vector3f(0,1,0);
-	right = vector3f(1,0,0);
 	destination = vector3f(0,0,0);
 	theta = 90;
 	phi = -90;
@@ -105,7 +102,7 @@ void Camera::setProjectionMatrix(float ratio)
 {
 	glPushMatrix();
 		glLoadIdentity();
-		gluPerspective(60.0f,ratio,0.1f,100.0f);
+		gluPerspective(60.0f,ratio,0.1f,200.0f);
 		glGetFloatv(GL_MODELVIEW_MATRIX, projectionMatrix);
 	glPopMatrix();
 }

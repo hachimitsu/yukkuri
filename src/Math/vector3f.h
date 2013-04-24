@@ -12,7 +12,9 @@ public:
 	std::string tostring();
 	float* toarray();
 	float dot_product(vector3f);
+	friend float dot_product(vector3f, vector3f);
 	vector3f cross_product(vector3f);
+	friend vector3f cross_product(vector3f, vector3f);
 	void normalize();
 	vector3f unit();
 

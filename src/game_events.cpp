@@ -1,15 +1,11 @@
 #include "game.h"
 
-// Keyboard and mouse input handler
 void Game::Events(SDL_Event* Event)
 {
-	// If window is not active, disables all input and pauses the game
-	// Renables everything when window regains focus
 	if ( Event->type == SDL_ACTIVEEVENT){
 		if(Event->active.state & SDL_APPACTIVE || Event->active.state & SDL_APPINPUTFOCUS){
 			if(Event->active.gain){
 				active = true;	
-				//SDL_ShowCursor(0);
 				SDL_WarpMouse(winWidth/2, winHeight/2);
 				SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
 				SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
@@ -19,7 +15,6 @@ void Game::Events(SDL_Event* Event)
 			}
 			else{	
 				active = false;
-				//SDL_ShowCursor(1);
 				SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
 				SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
 				SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
@@ -37,16 +32,16 @@ void Game::Events(SDL_Event* Event)
 				glViewport(0, 0, winWidth, winHeight);
 				camera.setProjectionMatrix((float)winWidth/(float)winHeight);
 				break;
-			case SDL_QUIT: // Quits the game when pressing the close button
+			case SDL_QUIT:
 				Running = false;
 				break;
-			case SDL_KEYDOWN: // Sets the keystate for the pressed key
+			case SDL_KEYDOWN:
 				switch(Event->key.keysym.sym){
-					case SDLK_ESCAPE: // Quits the game when the ESC key is pressed
+					case SDLK_ESCAPE:
 						Running = false;
 						break;
-					case SDLK_LSHIFT: // Doubles the movement speed for the camera
-						camera.setSpeed(0.05f);
+					case SDLK_LSHIFT:
+						camera.setSpeed(MOUSEMAXSPEED);
 						break;
 				}
 				break;
@@ -54,11 +49,11 @@ void Game::Events(SDL_Event* Event)
 				switch(Event->key.keysym.sym)
 				{
 					case SDLK_LSHIFT:
-						camera.setSpeed(0.025f);
+						camera.setSpeed(MOUSEMINSPEED);
 						break;
 				}
 				break;
-			case SDL_MOUSEBUTTONDOWN: // Handles mouse button presses
+			case SDL_MOUSEBUTTONDOWN:
 				switch(Event->button.button){
 					case SDL_BUTTON_MIDDLE:{
 						mouse.middle = true;
@@ -77,20 +72,20 @@ void Game::Events(SDL_Event* Event)
 						break;
 					}
 					case SDL_BUTTON_WHEELUP:{
-						camera.setSpeed(0.25);
+						camera.setSpeed(MOUSEMAXSPEED * 5);
 						camera.setDestination(8);
-						camera.setSpeed(0.025);
+						camera.setSpeed(MOUSEMINSPEED);
 						break;
 					}
 					case SDL_BUTTON_WHEELDOWN:{
-						camera.setSpeed(0.25);						
+						camera.setSpeed(MOUSEMAXSPEED * 5);						
 						camera.setDestination(2);
-						camera.setSpeed(0.025);
+						camera.setSpeed(MOUSEMINSPEED);
 						break;
 					}
 				}
 				break;
-			case SDL_MOUSEBUTTONUP: // Handles mouse button releases
+			case SDL_MOUSEBUTTONUP:
 				switch(Event->button.button){
 					case SDL_BUTTON_MIDDLE:{
 						mouse.middle = false;
@@ -108,8 +103,8 @@ void Game::Events(SDL_Event* Event)
 					}
 				}
 				break;
-			case SDL_MOUSEMOTION:{ // Handles mouse motion
-				if( mouse.middle ){ // Handles free look
+			case SDL_MOUSEMOTION:{ 
+				if( mouse.middle ){
 					freelook_dx = Event->motion.x - winWidth/2;
 					freelook_dy = Event->motion.y - winHeight/2;
 
@@ -117,7 +112,7 @@ void Game::Events(SDL_Event* Event)
 					SDL_WarpMouse(winWidth/2, winHeight/2);
 					SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
 				}
-				else if( mouse.right ){ // Handles dragging the map
+				else if( mouse.right ){
 					destination.set(Event->motion.x-mouse.pos.x, 0, Event->motion.y-mouse.pos.y);
 					camera.setDestination(destination.unit(), 0.1f * camera.get_pos().y);
 					mouse.pos.x = Event->motion.x;

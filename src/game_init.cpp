@@ -1,8 +1,5 @@
 #include "game.h"
 #include "time.h"
-#include <iostream>
-
-using namespace std;
 
 bool Game::Init()
 {
@@ -55,20 +52,18 @@ bool Game::Init()
 	for (int i = 0; i < 256; ++i)
 		keyStates[i] = false;
 
-	// Initialize camera
 	camera.init(winWidth/float(winHeight));
-	camera.setPos(0,2,3);
-	camera.lookat(0, 0, 1.5);
-	camera.setSpeed(0.025f);
+	camera.setPos(0,3,3);
+	camera.lookat(0, 0, 0);
+	camera.setSpeed(MOUSEMINSPEED);
 
-	// Initialize lights
 	light.set(-0.5,2,-2.7);
 	float global_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
+	map.init(30,30);
 	
-
 	return true;
 }

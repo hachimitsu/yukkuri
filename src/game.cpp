@@ -31,7 +31,7 @@ int Game::Execute(){
 		if( active )
 			Render();
 
-		if( !active )
+		//if( !active )
 		#ifdef __linux__
 			usleep(10000);
 		#endif
@@ -45,9 +45,9 @@ int Game::Execute(){
 }
 
 int main(int argc, char* argv[]){
-	#ifdef _WIN32 
-	FreeConsole();
-	#endif
+	// #ifdef _WIN32 
+	// FreeConsole();
+	// #endif
  	Game theGame;
     return theGame.Execute();
 }

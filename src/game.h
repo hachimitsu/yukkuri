@@ -5,8 +5,11 @@
 #include <SDL/SDL_opengl.h>
 #include "Math/Maths.h"
 #include "Camera/Camera.h"
+#include "Map/Map.h"
 
-// Mouse struct for position and buttons states
+#define MOUSEMINSPEED 0.1f
+#define MOUSEMAXSPEED 0.2f
+
 struct Mouse{
 	vector3f pos;
 	bool left, middle, right;
@@ -32,6 +35,8 @@ private:
 
 	float dt;
 
+	Map map;
+
 	bool Init();
 	void Events(SDL_Event* Event);
 	void Loop();
@@ -39,6 +44,7 @@ private:
 	void Cleanup();
 	void drawScene();
 	void update();
+	void interpolate();
 	void draw_hud();
 
 public:
