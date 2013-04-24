@@ -8,6 +8,7 @@
 #include <string>
 #include <math.h>
 #include "vector3f.h"
+#include "quaternion.h"
 #include <cstdlib>
 #include <vector>
 
@@ -24,5 +25,7 @@ float real_rand();
 float to_rad(float);
 float to_deg(float);
 void set_colour(colour&,int,int,int,int);
+
+
 
 #endif

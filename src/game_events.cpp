@@ -67,6 +67,7 @@ void Game::Events(SDL_Event* Event)
 						break;
 					}
 					case SDL_BUTTON_LEFT:{
+						mouse.left = true;
 						break;
 					}
 					case SDL_BUTTON_RIGHT:{
@@ -98,6 +99,7 @@ void Game::Events(SDL_Event* Event)
 						break;
 					}
 					case SDL_BUTTON_LEFT:{
+						mouse.left = false;
 						break;
 					}
 					case SDL_BUTTON_RIGHT:{

@@ -5,6 +5,11 @@
 #define MAX_FRAMESKIP 5
 #define MOUSE_SENSITIVITY 0.5f
 
+// Update the game state
+void Game::update(){
+	
+}
+
 // Move the camera depending on the keys pressed
 void setDestination(Camera &camera, bool *keyStates){
 	Uint8 *keystate = SDL_GetKeyState(NULL);
@@ -33,11 +38,6 @@ void setDestination(Camera &camera, bool *keyStates){
 		camera.setDestination(2);
 }
 
-// Update the game state
-void Game::update(){
-	
-}
-
 // The game loop for timing and updating
 // Updates the game at GAME_SPEED frames per second and will skip MAX_FRAMESKIP if it is behind
 // Calculates dt for interpolation
@@ -64,10 +64,10 @@ void Game::Loop(){
 	}
 	else loops = 0;
 
-	dt = (SDL_GetTicks() + SKIP_TICKS - next_game_tick ) / float(SKIP_TICKS);
-	if( dt > 1 ) dt = 1;
-
 	if( active){
+		dt = (SDL_GetTicks() + SKIP_TICKS - next_game_tick ) / float(SKIP_TICKS);
+		if( dt > 1 ) dt = 1;
+
 		if( camera.moving() )
 			camera.move(dt);
 

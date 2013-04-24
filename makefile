@@ -4,37 +4,29 @@ CC = g++
 PFLAGS = -O3 -ffast-math -g -c -w
 CFLAGS = -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -static-libgcc -static-libstdc++
 
-OBJ = $(ODIR)/game.o $(ODIR)/game_cleanup.o $(ODIR)/game_events.o $(ODIR)/game_init.o $(ODIR)/game_loop.o $(ODIR)/game_render.o $(ODIR)/vector3f.o $(ODIR)/Maths.o $(ODIR)/Camera.o
+_GAME_DEP = game.h
+_GAME_OBJ = game.o game_cleanup.o game_events.o game_init.o game_loop.o game_render.o
+GAME_DEP = $(patsubst %,$(DIR)/%,$(_GAME_DEP))
+GAME_OBJ = $(patsubst %,$(ODIR)/%,$(_GAME_OBJ)) 
+OBJ = $(ODIR)/Camera.o $(ODIR)/vector3f.o $(ODIR)/Maths.o $(ODIR)/quaternion.o
 
-main.exe: $(OBJ)
-	$(CC) $(OBJ) -o main.exe $(CFLAGS)
+main.exe: $(GAME_OBJ) $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) 
 
-$(ODIR)/game.o: $(DIR)/game.cpp $(DIR)/game.h
-	$(CC) $(PFLAGS) $(DIR)/game.cpp -o $(ODIR)/game.o
+$(ODIR)/%.o: $(DIR)/%.cpp $(GAME_DEP)
+	$(CC) $(PFLAGS) $< -o $@
 
-$(ODIR)/game_cleanup.o: $(DIR)/game_cleanup.cpp $(DIR)/game.h
-	$(CC) $(PFLAGS) $(DIR)/game_cleanup.cpp -o $(ODIR)/game_cleanup.o
-
-$(ODIR)/game_events.o: $(DIR)/game_events.cpp $(DIR)/game.h
-	$(CC) $(PFLAGS) $(DIR)/game_events.cpp -o $(ODIR)/game_events.o
-
-$(ODIR)/game_init.o: $(DIR)/game_init.cpp $(DIR)/game.h
-	$(CC) $(PFLAGS) $(DIR)/game_init.cpp -o $(ODIR)/game_init.o
-
-$(ODIR)/game_loop.o: $(DIR)/game_loop.cpp $(DIR)/game.h
-	$(CC) $(PFLAGS) $(DIR)/game_loop.cpp -o $(ODIR)/game_loop.o
-
-$(ODIR)/game_render.o: $(DIR)/game_render.cpp $(DIR)/game.h
-	$(CC) $(PFLAGS) $(DIR)/game_render.cpp -o $(ODIR)/game_render.o
-
-$(ODIR)/Camera.o: $(DIR)/Camera.h $(DIR)/Camera.cpp
-	$(CC) $(PFLAGS) $(DIR)/Camera.cpp -o $(ODIR)/Camera.o
+$(ODIR)/Camera.o: $(DIR)/Camera/Camera.h $(DIR)/Camera/Camera.cpp
+	$(CC) $(PFLAGS) $(DIR)/Camera/Camera.cpp -o $(ODIR)/Camera.o
 
 $(ODIR)/vector3f.o: $(DIR)/Math/vector3f.h $(DIR)/Math/vector3f.cpp
 	$(CC) $(PFLAGS) $(DIR)/Math/vector3f.cpp -o $(ODIR)/vector3f.o
 
 $(ODIR)/Maths.o: $(DIR)/Math/Maths.h $(DIR)/Math/Maths.cpp
-	$(CC) $(PFLAGS) $(DIR)/Math/Maths.cpp -o $(ODIR)/Maths.o
+	$(CC) $(PFLAGS) $(DIR)/Math/Maths.cpp -o $(ODIR)/Maths.o 
+
+$(ODIR)/quaternion.o: $(DIR)/Math/quaternion.h $(DIR)/Math/quaternion.cpp
+	$(CC) $(PFLAGS) $(DIR)/Math/quaternion.cpp -o $(ODIR)/quaternion.o 
 
 clean:
 	rm $(ODIR)/*.o

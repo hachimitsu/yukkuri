@@ -4,7 +4,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 #include "Math/Maths.h"
-#include "Camera.h"
+#include "Camera/Camera.h"
 
 // Mouse struct for position and buttons states
 struct Mouse{

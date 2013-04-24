@@ -1,4 +1,30 @@
 #include "game.h"
+#include <iostream>
+using namespace std;
+
+void draw_ring(float size){
+	static GLuint index;
+
+	if( !index ){
+		index = glGenLists(1);
+
+		glNewList(index,GL_COMPILE);
+		glBegin(GL_LINE_LOOP);
+			glColor4ub(247,181,27,255);
+			int steps = 36;
+			float dr = 360.0f/steps;
+			for( int i = 0; i <= 360; i += dr ){
+				glVertex3f(sin(to_rad(i)),0,cos(to_rad(i)));
+			}
+		glEnd();
+		glEndList();
+	}
+
+	glPushMatrix();
+	glScalef(size,1,size);
+	glCallList(index);
+	glPopMatrix();
+}
 
 //Set light position and properties
 void setLights(vector3f light, float intensity){
@@ -34,20 +60,75 @@ void Game::draw_hud(){
 	glEnable(GL_LIGHTING);
 }
 
+void draw_cube(float size){
+	float v = size/2.0f;
+	glBegin(GL_QUADS);
+		glNormal3f(0,0,1);
+		glVertex3f(-v,v,v);
+		glVertex3f(-v,-v,v);
+		glVertex3f(v,-v,v);
+		glVertex3f(v,v,v);
+
+		glNormal3f(0,0,-1);
+		glVertex3f(v,v,-v);
+		glVertex3f(v,-v,-v);
+		glVertex3f(-v,-v,-v);
+		glVertex3f(-v,v,-v);
+
+		glNormal3f(1,0,0);
+		glVertex3f(v,v,v);
+		glVertex3f(v,-v,v);
+		glVertex3f(v,-v,-v);
+		glVertex3f(v,v,-v);
+
+		glNormal3f(-1,0,0);
+		glVertex3f(-v,v,-v);
+		glVertex3f(-v,-v,-v);
+		glVertex3f(-v,-v,v);
+		glVertex3f(-v,v,v);
+
+		glNormal3f(0,1,0);
+		glVertex3f(-v,v,-v);
+		glVertex3f(-v,v,v);
+		glVertex3f(v,v,v);
+		glVertex3f(v,v,-v);
+
+		glNormal3f(0,-1,0);
+		glVertex3f(-v,-v,v);
+		glVertex3f(-v,-v,-v);
+		glVertex3f(v,-v,-v);
+		glVertex3f(v,-v,v);
+	glEnd();
+}
+
 //Draw the world and all objects
 void Game::drawScene(){
-	int r = 10;
+	int r = 30;
 
+	glColor3f(1,1,1);
+	draw_cube(0.1);
+
+	glPushMatrix();
+	glColor3f(0,1,0);
+	glTranslatef(0,0,1);
+	draw_cube(0.1);
+	glPopMatrix();
+
+	glPushMatrix();
 	glColor3f(1,0,0);
-	glNormal3f(0,1,0);
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex3f(0,0,0);
-	for( int i = 0; i >= -360; i-=10 ){
-		vector3f p(r * cos(to_rad(i)), 0, r * sin(to_rad(i)));
-		glVertex3f(p.x,p.y,p.z);
-	}
-	glEnd();
+	glTranslatef(1,0,0);
+	draw_cube(0.1);
+	glPopMatrix();
 
+	glPushMatrix();
+	glColor3f(1,1,0);
+	glTranslatef(0,1,0);
+	draw_cube(0.1);
+	glPopMatrix();
+
+	draw_ring(10);
+	draw_ring(20);
+	draw_ring(30);
 
 	draw_hud();
 }

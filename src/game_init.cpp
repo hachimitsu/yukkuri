@@ -1,5 +1,8 @@
 #include "game.h"
 #include "time.h"
+#include <iostream>
+
+using namespace std;
 
 bool Game::Init()
 {
@@ -64,6 +67,8 @@ bool Game::Init()
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+
+	
 
 	return true;
 }
